@@ -10,10 +10,30 @@ func FixHTMLEntities(s string) string {
 	return html.UnescapeString(s)
 }
 
-var ErrUTF8 = errors.New("UTF-8 encoding error")
-var ErrImpure = errors.New("FixDoubleUTF8: skip (impure input)")
+var (
+	// ErrUTF8 is raised if the input has rune errors
+	ErrUTF8 = errors.New("UTF-8 encoding error")
 
-// FixDoubleUTF8 fixes double UTF-8 encoding in-place
+	// ErrImpure is raised if the string is not purely double UTF-8 encoded
+	// Impurity criterias:
+	// - some runes have values above 255
+	// - some consecutive runes with value < 256 do not combine to make a valid rune
+	ErrImpure = errors.New("FixDoubleUTF8: skip (impure input)")
+)
+
+// FixDoubleUTF8 fixes double UTF-8 encoding issues in-place.
+//
+// All precautions are taken: nothing is changed if the input is not
+// purely double encoded.
+//
+// In case of error, buf is not changed and is just returned.
+// In case of success and double UTF-8 was found, the returned
+// slice will be shorter than the input.
+//
+// Two errors may be returned:
+//   - ErrUTF8: this is not a valid UTF-8 string
+//   - ErrImpure: this is a valid UTF-8 string, but above, some rune do not make a
+//     purely double encoded rune
 func FixDoubleUTF8(buf []byte) ([]byte, error) {
 	impure := false
 	x := [4]byte{} // Buffer for decoding a rune. Max rune: U+10FFFF => 4 UTF-8 bytes

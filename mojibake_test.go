@@ -27,6 +27,8 @@ func TestFixDoubleUTF8(t *testing.T) {
 		{"Ã©nergie", "énergie"},
 		{"Ã©vÃ¨nement", "évènement"},
 		{"TÃªte", "Tête"},
+		{"🇫🇷", "🇫🇷"},
+		{"🇫🇷 France", "🇫🇷 France"},
 		{"\u00f0\u009f\u0087\u00ab\u00f0\u009f\u0087\u00b7", "🇫🇷"},
 	} {
 		work := []byte(test.in)

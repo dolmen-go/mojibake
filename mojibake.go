@@ -79,17 +79,12 @@ Main:
 				return buf, ErrUTF8
 			}
 			i += n
-			if r < 128 || r > 255 {
-				impure = true
-				break Main
-			}
 			x[j] = byte(r)
 			j++
-			r, n = utf8.DecodeRune(x[:j])
-			if n == j && r != utf8.RuneError {
+			if utf8.Valid(x[:j]) {
 				break
 			}
-			if j == len(x) || !utf8.ValidRune(r) {
+			if j == len(x) {
 				impure = true
 				break Main
 			}

@@ -60,12 +60,9 @@ Main:
 			return buf, ErrUTF8
 		}
 		i += n
-		if impure {
-			continue
-		}
 		if r < UTF8FirstByteMin || r > UTF8FirstByteMax {
 			impure = true
-			continue
+			break
 		}
 		if first < 0 {
 			first = i - n
@@ -76,7 +73,7 @@ Main:
 			r, n = utf8.DecodeRune(buf[i:])
 			if n != 2 {
 				impure = true
-				break
+				break Main
 			}
 			if r == utf8.RuneError {
 				return buf, ErrUTF8
@@ -84,7 +81,7 @@ Main:
 			i += n
 			if r < 128 || r > 255 {
 				impure = true
-				continue Main
+				break Main
 			}
 			x[j] = byte(r)
 			j++
@@ -94,17 +91,20 @@ Main:
 			}
 			if j == len(x) || !utf8.ValidRune(r) {
 				impure = true
-				break
+				break Main
 			}
 		}
 		last = i - 1
 	}
 
-	if last < 0 {
-		return buf, nil
+	if i < len(buf) && !utf8.Valid(buf[i:]) {
+		return buf, ErrUTF8
 	}
 	if impure {
 		return buf, ErrImpure
+	}
+	if last < 0 {
+		return buf, nil
 	}
 
 	// Second pass: fix in-place buf[first:last]

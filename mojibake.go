@@ -21,6 +21,12 @@ var (
 	ErrImpure = errors.New("FixDoubleUTF8: skip (impure input)")
 )
 
+const (
+	// Limits of first byte of UTF-8 encoded Unicode codepoint outside the ASCII range
+	UTF8FirstByteMin = 194 // \U00000080 in UTF-8 starts with byte 194
+	UTF8FirstByteMax = 244 // \U0010FFFF in UTF-8 starts with byte 244
+)
+
 // FixDoubleUTF8 fixes double UTF-8 encoding issues in-place.
 //
 // All precautions are taken: nothing is changed if the input is not

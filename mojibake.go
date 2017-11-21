@@ -42,7 +42,7 @@ const (
 //     purely double encoded rune
 func FixDoubleUTF8(buf []byte) ([]byte, error) {
 	impure := false
-	x := [4]byte{} // Buffer for decoding a rune. Max rune: U+10FFFF => 4 UTF-8 bytes
+	x := [utf8.UTFMax]byte{} // Buffer for decoding a rune. Max rune: U+10FFFF => 4 UTF-8 bytes
 	first := -1
 	last := -1
 	i := 0
@@ -51,7 +51,7 @@ func FixDoubleUTF8(buf []byte) ([]byte, error) {
 	// with the next one to make an UTF-8 char.
 Main:
 	for i < len(buf) {
-		if buf[i] < 128 {
+		if buf[i] < utf8.RuneSelf {
 			i++
 			continue
 		}
@@ -60,7 +60,10 @@ Main:
 			return buf, ErrUTF8
 		}
 		i += n
-		if r > 255 {
+		if impure {
+			continue
+		}
+		if r < UTF8FirstByteMin || r > UTF8FirstByteMax {
 			impure = true
 			continue
 		}
@@ -108,7 +111,7 @@ Main:
 	out := buf[:first]
 	i = first
 	for i <= last {
-		if buf[i] < 128 {
+		if buf[i] < utf8.RuneSelf {
 			out = append(out, buf[i])
 			i++
 			continue

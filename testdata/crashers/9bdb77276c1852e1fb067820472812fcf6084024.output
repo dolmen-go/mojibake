@@ -1,0 +1,10 @@
+panic: UTF-8 validation error: UTF-8 encoding error
+
+goroutine 1 [running]:
+github.com/dolmen-go/mojibake.Fuzz(0x1236000, 0x3, 0x200000, 0xc42003df70)
+	/var/folders/7b/5rfj3bgs3tj34c6f2jy8h39w0000gn/T/go-fuzz-build028746724/gopath/src/github.com/dolmen-go/mojibake/fuzz.go:23 +0x3e3
+go-fuzz-dep.Main(0x10f5e98)
+	/var/folders/7b/5rfj3bgs3tj34c6f2jy8h39w0000gn/T/go-fuzz-build028746724/goroot/src/go-fuzz-dep/main.go:49 +0xad
+main.main()
+	/var/folders/7b/5rfj3bgs3tj34c6f2jy8h39w0000gn/T/go-fuzz-build028746724/gopath/src/github.com/dolmen-go/mojibake/go.fuzz.main/main.go:10 +0x2d
+exit status 2

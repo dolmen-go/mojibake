@@ -81,7 +81,13 @@ Main:
 			i += n
 			x[j] = byte(r)
 			j++
-			if utf8.Valid(x[:j]) {
+			/*
+				if utf8.Valid(x[:j]) {
+					break
+				}
+			*/
+			r, _ := utf8.DecodeRune(x[:j])
+			if r != utf8.RuneError {
 				break
 			}
 			if j == len(x) {
@@ -120,8 +126,7 @@ Main:
 			i += n
 			x[j] = byte(r)
 			j++
-			r, n = utf8.DecodeLastRune(x[:j])
-			if n == j && r != utf8.RuneError {
+			if utf8.Valid(x[:j]) {
 				break
 			}
 		}

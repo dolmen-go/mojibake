@@ -7,7 +7,7 @@ import (
 	"github.com/dolmen-go/mojibake"
 )
 
-// "magnï¿½tique"
+// TODO "magnï¿½tique" => "magnétique"
 
 func TestFixDoubleUTF8(t *testing.T) {
 	for _, test := range []struct {
@@ -30,6 +30,7 @@ func TestFixDoubleUTF8(t *testing.T) {
 		{"🇫🇷", "🇫🇷"},
 		{"🇫🇷 France", "🇫🇷 France"},
 		{"\u00f0\u009f\u0087\u00ab\u00f0\u009f\u0087\u00b7", "🇫🇷"},
+		{"Neovadiol Rose Platinium Nuit Soin Anti-Âge Nuit Rosé Pour Peaux Matures", "Neovadiol Rose Platinium Nuit Soin Anti-Âge Nuit Rosé Pour Peaux Matures"},
 	} {
 		work := []byte(test.in)
 		work, err := mojibake.FixDoubleUTF8(work)
